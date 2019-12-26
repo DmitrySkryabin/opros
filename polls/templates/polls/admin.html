@@ -2,11 +2,56 @@
 {% block content %}
 <div class="container">
   <div class="row">
+    <div class="col-3">
+    </div>
+    <div class="col-6" style="text-align:  center;">
+      <h4>Данные по результатам опроса "{{ title }}"</h4>
+    </div>
+    <div class="col-3">
+    </div>
+  </div>
+  <div class="row">
     {% for item in data %}
     <figure class="highcharts-figure">
         <div id="{{ item.id }}"></div>
     </figure>
     {% endfor %}
+  </div>
+  <div class="row">
+    <div class="col-9">
+      <p>Ниже таблица со всеми сохраненными опросами. Для редактирования выберите опрос и нажмите на "Редактировать". Для добавления нового опроса нажмите на "Добавить опрос"</p>
+    </div>
+    <div class="col-3">
+      <a href="{% url 'polls:create' %}" class="btn btn-block btn-primary">Добавить опрос</a>
+    </div>
+  </div>
+  <div class="row">
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Название</th>
+          <th>Количество вопросов</th>
+          <th>Активная форма</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in parent_data %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ item.title }}</td>
+            <td>{{ item.question_set.all.count }}</td>
+            <td>{% if item.active %}
+              Активна
+            {% else %}
+              Не активна
+            {% endif %}</td>
+            <td> <a href="{% url 'polls:update' item.id %}" class="btn btn-block btn-primary">Редактировать</a> </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>

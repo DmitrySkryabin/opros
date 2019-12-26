@@ -1,8 +1,11 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.views import generic
+from django.forms import modelformset_factory, inlineformset_factory, formset_factory, modelform_factory
 
+
+from .forms import QuestionForm, QuestionGroupForm
 from .models import Choice, Question, Question_group
 
 hiden=[]
@@ -73,9 +76,55 @@ def vote(request, question_id):
 
 
 def adminview(request):
+    parent_data = Question_group.objects.all()
+    for item in parent_data:
+        if item.active == True:
+            title = item.title
     data = Question.objects.filter(question_group_id__active=True)
     print(data)
     args={
-        'data':data
+        'data':data,
+        'parent_data':parent_data,
+        'title':title
     }
     return render(request, "polls/admin.html",args)
+
+def update(request, question_id):
+    args = {
+
+    }
+    return render(request, "polls/createpoll.html", args)
+
+
+def create(request):
+    args={}
+    args['create'] = 'true'
+    form_q = modelformset_factory(Question, form = QuestionForm, can_delete=True, extra=3)
+    formset = form_q(queryset=Question.objects.none())
+    if request.method == 'POST':
+        form = QuestionGroupForm(request.POST)
+        if form.is_valid():
+            try:
+                form.save()
+                print("1")
+                new_q = form.instance
+                formq = form_q(request.POST)
+                if formq.is_valid():
+                    instances = formq.save(commit=False)
+                    print(instances)
+                    print("2")
+                    for instance in instances:
+                        instance.question_group_id = new_q
+                        instance.save()
+                    for obj in formq.deleted_objects:
+                        obj.delete()
+            except:
+                pass
+                #args['save_error']=str(e)
+                #return  render(request, 'polls/createpoll.html', args)
+        return redirect("polls:admin_page")
+    return render(request, 'polls/createpoll.html', {
+        'form': QuestionGroupForm(),
+        'formset': formset,
+        'create': 'create'
+        })

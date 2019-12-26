@@ -2,23 +2,45 @@
 {% block content %}
   <div class="container">
     <div class="row">
-      <div class="form">
-        <form class="" action="" method="post">
-          {% csrf_token %}
-          {{ form }}
-          <div class="bg-primary">
-            <div class="form-group">
-              {{ formset.management_form }}
-              {% for form in formset %}
-                <div class="form-group count {{ form.instance.id }}" id="forclone">
-                  {{ form.as_table}}
-                </div>
-              {% endfor %}
-            </div>
-          </div>
-          <input type="submit" name="" value="Сохранить" class="btn btn-block btn-primary">
-        </form>
+      <div class="col-3">
       </div>
+      <div class="col-6" style="text-align:  center;">
+        {% if create %}
+        <h4>Добавление нового опроса</h4>
+        {% else %}
+        <h4>Редактирование опроса</h4>
+        {% endif %}
+      </div>
+      <div class="col-3">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3">
+      </div>
+      <div class="col-6">
+        <div class="">
+          <form class="" action="" method="post">
+            {% csrf_token %}
+            <div class="form-group mar-bot">
+              {{ form }}
+            </div>
+            <div class="">
+              <div class="form-group">
+                {{ formset.management_form }}
+                {% for form in formset %}
+                  <div class="form-group count {{ form.instance.id }}" id="forclone">
+                    {{ form.as_table}}
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+            <button type="submit" name="button" value="active" class="btn btn-block btn-primary">Активировать</button>
+            <button type="submit" name="button" value="save" class="btn btn-block btn-primary">Сохранить и далее</button>
+          </form>
+        </div>
+      </div>
+      <div class="col-3">
+        </div>
     </div>
   </div>
 {% endblock %}

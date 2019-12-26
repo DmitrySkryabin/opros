@@ -1,0 +1,61 @@
+{% extends "polls/index.html" %}
+{% block content %}
+  <div class="container">
+    {% if end %}
+    <div class="row">
+      <div class="col-3">
+      </div>
+      <div class="col-6">
+        <h4>Все данные заполнены!</h4>
+        <a href="{% url 'polls:admin_page' %}" class="btn btn-block btn-primary">Назад</a>
+      </div>
+      <div class="col-3">
+      </div>
+    </div>
+    {% else %}
+    <div class="row">
+      <div class="col-3">
+      </div>
+      <div class="col-6" style="text-align:  center;">
+        {% if create %}
+        <h4>Добавление ответов к вопросам</h4>
+        {% else %}
+        <h4>Добавление ответов к вопросам</h4>
+        {% endif %}
+      </div>
+      <div class="col-3">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3">
+      </div>
+      <div class="col-6">
+        {% for item in data %}
+          <form class="" action="" method="post" style="display:{% for hid in hiden %}
+                  {% if item.id == hid %}
+                  none
+                  {% endif %}
+                {% endfor %}">
+            {% csrf_token %}
+            <input type="text" name="id" value="{{ item.id }}" style="display: none;">
+            <h4>{{ item.question_text }}</h4>
+            <div class="form-group">
+              {{ formset.management_form }}
+              {% for form in formset %}
+                <div class="form-group">
+                  {{ form }}
+                </div>
+              {% endfor %}
+            </div>
+            <div class="form-group">
+              <input type="submit" name="" value="Сохранить" class="btn btn-block btn-primary">
+            </div>
+          </form>
+        {% endfor %}
+      </div>
+      <div class="col-3">
+        </div>
+    </div>
+    {% endif %}
+  </div>
+{% endblock %}

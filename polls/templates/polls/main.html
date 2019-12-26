@@ -2,21 +2,77 @@
 {% block content %}
 <section class="py-5">
   <div class="container">
+    <script src="../../static/js/davidshimjs-qrcodejs-04f46c6/qrcode.min.js"></script>
+    <script src="../../static/css/js/bootstrap.js"></script>
       {% if latest_question_list %}
       {% for question in latest_question_list %}
-        {% if forloop.first %}<div class="row">{% endif %}
+        <div class="row">
           <div class="col-4">
-            <div class="poll-div">
-                <a href="{% url 'polls:detail' question.id %}">{{ question.title }}</a>
-            </div>
-
           </div>
-        {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}
-        {% if forloop.last %}</div>{% endif %}
+          <div class="col-4 qr-div" id="fs_section">
+            <div id="qrcode"></div>
+            <script type="text/javascript">
+              new QRCode(document.getElementById("qrcode"), "http://192.168.0.15:8000{% url 'polls:detail' question.id %}");
+            </script>
+          </div>
+          <div class="col-4">
+          </div>
+        </div>
       {% endfor %}
       {% else %}
-          <p>НЕТ доступных опросов</p>
+          <p>Нет доступных опросов</p>
       {% endif %}
+      <div class="row">
+        <div class="col-11">
+
+        </div>
+        <div class="col-1">
+          <button onclick="enterFullscreen('fs_section')" class="btn btn-primary">Полный экран</button>
+        </div>
+      </div>
     </div>
 </section>
+<script type="text/javascript">
+  document.cancelFullScreen = document.cancelFullScreen || document.webkitCancelFullScreen ||      document.mozCancelFullScreen;
+
+  function onFullScreenEnter() {
+    console.log("Enter fullscreen initiated from iframe");
+  };
+
+  function onFullScreenExit() {
+    console.log("Exit fullscreen initiated from iframe");
+  };
+
+  // Note: FF nightly needs about:config full-screen-api.enabled set to true.
+  function enterFullscreen(id) {
+    onFullScreenEnter(id);
+    var el =  document.getElementById(id);
+    var onfullscreenchange =  function(e){
+      var fullscreenElement = document.fullscreenElement || document.mozFullscreenElement || document.webkitFullscreenElement;
+      var fullscreenEnabled = document.fullscreenEnabled || document.mozFullscreenEnabled || document.webkitFullscreenEnabled;
+      console.log( 'fullscreenEnabled = ' + fullscreenEnabled, ',  fullscreenElement = ', fullscreenElement, ',  e = ', e);
+    }
+
+    el.addEventListener("webkitfullscreenchange", onfullscreenchange);
+    el.addEventListener("mozfullscreenchange",     onfullscreenchange);
+    el.addEventListener("fullscreenchange",             onfullscreenchange);
+
+    if (el.webkitRequestFullScreen) {
+      el.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+    } else {
+      el.mozRequestFullScreen();
+    }
+    document.querySelector('#'+id + ' button').onclick = function(){
+      exitFullscreen(id);
+    }
+  }
+
+  function exitFullscreen(id) {
+    onFullScreenExit(id);
+    document.cancelFullScreen();
+    document.querySelector('#'+id + ' button').onclick = function(){
+      enterFullscreen(id);
+    }
+  }
+</script>
 {% endblock %}

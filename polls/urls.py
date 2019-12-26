@@ -10,7 +10,9 @@ urlpatterns = [
     path('<int:question_id>/vote/', views.vote, name='vote'),
     path('login/', include('log.urls')),
     path('admin_page/', views.adminview, name="admin_page"),
-    path('<int:question_id>/updatepoll/', views.update, name="update"),
+    path('<int:id>/updatepoll/', views.update, name="update"),
     path('createpoll/', views.create, name="create"),
+    path('<int:id>/addchoice/', views.addchoice, name="addchoice"),
 ]
+
 #path('<int:pk>/', views.DetailView.as_view(), name='detail'),

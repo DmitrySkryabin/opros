@@ -1,0 +1,59 @@
+{% extends "polls/index.html" %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    {% for item in data %}
+    <figure class="highcharts-figure">
+        <div id="{{ item.id }}"></div>
+    </figure>
+    {% endfor %}
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<script type="text/javascript">
+  // Build the chart
+console.log("test");
+  {% for item in data %}
+  console.log("{{ item }}")
+  console.log("{{ item.pub_date }}")
+  console.log("test2")
+  Highcharts.chart('{{ item.id }}', {
+      chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie'
+      },
+      title: {
+          text: '{{ item.question_text }}'
+      },
+      plotOptions: {
+          pie: {
+              allowPointSelect: true,
+              cursor: 'pointer',
+              dataLabels: {
+                  enabled: false
+              },
+              showInLegend: true
+          }
+      },
+      series: [{
+          name: 'Brands',
+          colorByPoint: true,
+          data: [{% for choice in item.choice_set.all %}
+          {
+            name:"{{ choice.choice_text }}",
+            y: {{ choice.votes }}
+          },
+          {% endfor %}
+          ]
+      }]
+  });
+  {% endfor %}
+</script>
+
+{% endblock %}

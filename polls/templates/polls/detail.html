@@ -1,0 +1,43 @@
+{% extends "polls/index.html" %}
+{% block content %}
+  <div class="container">
+      <div class="form-main">
+        {% if end %}
+          <div class="forn-group">
+            <h1>Спасибо за прохождение опроса!</h1>
+            <p>Мы очень благодарны вам за то что вы прощли наш опрос! Ваш голос важен для нас!</p>
+            <a href="/" class="btn btn-block btn-primary int-form">Назад</a>
+          </div>
+        {% else %}
+        {% for item in data %}
+            <div class="bordered" style="display:
+                {% for hid in hiden %}
+                  {% if forloop.parentloop.counter == hid %}
+                  none
+                  {% endif %}
+                {% endfor %}
+                ">
+              <div class="form-group">
+                <h1>{{ item.question_text }}</h1>
+              </div>
+              {% if error_message %}
+                <div class="form-group">
+                  <p><strong>{{ error_message }}</strong></p>
+                </div>
+              {% endif %}
+              <form action="{% url 'polls:vote' item.id %}" method="post">
+                <div class="form-group">
+                  {% csrf_token %}
+                  {% for choice in item.choice_set.all %}
+                      <input type="radio" class="int-form" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+                      <label for="choice{{ forloop.counter }}" class="int-form">{{ choice.choice_text }}</label><br>
+                  {% endfor %}
+                </div>
+              <input type="submit" value="ВЫБРАТЬ" class="btn btn-block btn-primary int-form">
+              </form>
+            </div>
+        {% endfor %}
+        {% endif %}
+      </div>
+  </div>
+{% endblock %}
